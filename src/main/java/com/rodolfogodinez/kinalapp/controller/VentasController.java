@@ -1,10 +1,15 @@
 package com.rodolfogodinez.kinalapp.controller;
 
+import com.rodolfogodinez.kinalapp.entity.Usuario;
 import com.rodolfogodinez.kinalapp.entity.Ventas;
+import com.rodolfogodinez.kinalapp.service.IUsuarioService;
 import com.rodolfogodinez.kinalapp.service.IVentasService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -12,9 +17,11 @@ import java.util.List;
 public class VentasController {
 
     private final IVentasService ventasService;
+    private final IUsuarioService usuarioService;
 
-    public VentasController(IVentasService ventasService) {
+    public VentasController(IVentasService ventasService, IUsuarioService usuarioService) {
         this.ventasService = ventasService;
+        this.usuarioService = usuarioService;
     }
 
     @GetMapping
@@ -35,8 +42,20 @@ public class VentasController {
     }
 
     @PostMapping
-    public ResponseEntity<?> guardar(@RequestBody Ventas venta) {
+    public ResponseEntity<?> guardar(@RequestBody Ventas venta,
+                                     @AuthenticationPrincipal UserDetails userDetails) {
         try {
+            // Siempre tomar el usuario del servidor (seguridad)
+            if (userDetails != null) {
+                usuarioService.buscarPorUsername(userDetails.getUsername()).ifPresent(u -> {
+                    Usuario usuarioRef = new Usuario();
+                    usuarioRef.setCodigoUsuario(u.getCodigoUsuario());
+                    venta.setUsuario(usuarioRef);
+                });
+            }
+            if (venta.getUsuario() == null) {
+                return ResponseEntity.badRequest().body("No se pudo identificar al usuario");
+            }
             Ventas nuevaVenta = ventasService.guardar(venta);
             return new ResponseEntity<>(nuevaVenta, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
