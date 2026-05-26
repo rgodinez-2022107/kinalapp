@@ -1,21 +1,17 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <meta name="codigoUsuario" th:content="${codigoUsuarioActual}"/>
-    <title>KinalApp | Dashboard Moderno</title>
+    <title>KinalApp | Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* [TODO EL CSS QUE YA TENÍAS - MANTENLO IGUAL] */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -26,21 +22,10 @@
             min-height: 100vh;
         }
 
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1E293B;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #3B82F6;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #2563EB;
-        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #1E293B; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #3B82F6; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2563EB; }
 
         .navbar {
             background: rgba(15, 23, 42, 0.95);
@@ -51,355 +36,283 @@
             top: 0;
             z-index: 100;
             display: flex;
-            flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
             gap: 1rem;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
 
-        .logo {
+        .nav-brand {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-weight: 700;
-            font-size: 1.6rem;
-            letter-spacing: -0.5px;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .nav-brand img { width: 36px; height: 36px; border-radius: 8px; }
+
+        .nav-brand-text {
+            font-size: 1.3rem;
+            font-weight: 800;
             background: linear-gradient(135deg, #FFFFFF, #94A3B8);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
-        .logo i {
-            background: none;
-            -webkit-background-clip: unset;
-            background-clip: unset;
-            color: #3B82F6;
-            font-size: 1.8rem;
-        }
 
-        .nav-links {
-            display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-        }
+        .nav-links { display: flex; gap: 0.5rem; }
+
         .nav-link {
-            color: #CBD5E1;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
             text-decoration: none;
-            font-weight: 500;
-            padding: 0.5rem 0;
-            transition: all 0.2s ease;
-            border-bottom: 2px solid transparent;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .nav-link i {
-            font-size: 1rem;
-        }
-        .nav-link:hover, .nav-link.active {
-            color: #60A5FA;
-            border-bottom-color: #3B82F6;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 1.8rem;
-        }
-
-        .card {
-            background: rgba(30, 41, 59, 0.6);
-            backdrop-filter: blur(4px);
-            border-radius: 28px;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.4);
-            transition: transform 0.2s, border-color 0.2s;
-            overflow: hidden;
-        }
-        .card:hover {
-            border-color: rgba(59, 130, 246, 0.5);
-            transform: translateY(-3px);
-        }
-        .card-header {
-            padding: 1.5rem 1.8rem;
-            border-bottom: 1px solid rgba(71, 85, 105, 0.5);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .card-header h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            background: linear-gradient(120deg, #F1F5F9, #94A3B8);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .card-header h2 i {
-            color: #3B82F6;
-        }
-        .card-body {
-            padding: 1.8rem;
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .data-table thead tr {
-            background: rgba(15, 23, 42, 0.7);
-            border-radius: 18px;
-        }
-        .data-table th {
-            text-align: left;
-            padding: 1rem 1rem;
-            font-weight: 600;
             color: #94A3B8;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-        }
-        .data-table td {
-            padding: 1rem 1rem;
-            border-bottom: 1px solid rgba(71, 85, 105, 0.4);
-            color: #E2E8F0;
+            font-size: 0.9rem;
             font-weight: 500;
+            transition: all 0.2s;
         }
-        .data-table tr:hover td {
-            background: rgba(59, 130, 246, 0.1);
+
+        .nav-link:hover { background: rgba(59,130,246,0.15); color: #FFFFFF; }
+        .nav-link.active { background: rgba(59,130,246,0.25); color: #3B82F6; }
+
+        .nav-link-logout {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #F87171;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: 1px solid rgba(248,113,113,0.3);
         }
+
+        .nav-link-logout:hover { background: rgba(248,113,113,0.15); color: #FCA5A5; }
+
+        .user-info { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
 
         .badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 0.3rem 0.9rem;
-            border-radius: 40px;
-            font-size: 0.75rem;
+            gap: 0.3rem;
+            padding: 0.3rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.78rem;
             font-weight: 600;
-            width: fit-content;
-        }
-        .badge-active {
-            background: rgba(16, 185, 129, 0.2);
-            color: #34D399;
-            border: 1px solid rgba(16, 185, 129, 0.5);
-        }
-        .badge-inactive {
-            background: rgba(239, 68, 68, 0.2);
-            color: #F87171;
-            border: 1px solid rgba(239, 68, 68, 0.5);
         }
 
-        .form-group {
+        .badge-active   { background: rgba(16,185,129,0.2);  color: #34D399; border: 1px solid rgba(16,185,129,0.3); }
+        .badge-inactive { background: rgba(239,68,68,0.2);   color: #FCA5A5; border: 1px solid rgba(239,68,68,0.3); }
+        .badge-admin    { background: rgba(245,158,11,0.2);  color: #FCD34D; border: 1px solid rgba(245,158,11,0.3); }
+        .badge-user     { background: rgba(59,130,246,0.2);  color: #93C5FD; border: 1px solid rgba(59,130,246,0.3); }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
             margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
+
+        .alert-success { background: rgba(16,185,129,0.1); border-left: 4px solid #10B981; color: #34D399; }
+        .alert-error   { background: rgba(239,68,68,0.1);  border-left: 4px solid #EF4444; color: #FCA5A5; }
+
+        .two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+        .card {
+            background: rgba(30,41,59,0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59,130,246,0.2);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(59,130,246,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(15,23,42,0.5);
+        }
+
+        .card-header h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #E2E8F0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-body { padding: 1.5rem; }
+
+        .table-responsive { overflow-x: auto; }
+
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+
+        .data-table thead tr {
+            background: rgba(15,23,42,0.8);
+            border-bottom: 2px solid rgba(59,130,246,0.3);
+        }
+
+        .data-table th {
+            padding: 0.85rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #94A3B8;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .data-table td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid rgba(59,130,246,0.08);
+            color: #CBD5E1;
+            vertical-align: middle;
+        }
+
+        .data-table tbody tr:hover { background: rgba(59,130,246,0.05); }
+
+        .action-buttons { display: flex; gap: 0.4rem; }
+
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid rgba(59,130,246,0.3);
+            background: rgba(59,130,246,0.1);
+            color: #60A5FA;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover { background: rgba(59,130,246,0.25); color: #FFFFFF; }
+
+        .icon-btn-danger {
+            border-color: rgba(239,68,68,0.3);
+            background: rgba(239,68,68,0.1);
+            color: #F87171;
+        }
+
+        .icon-btn-danger:hover { background: rgba(239,68,68,0.25); color: #FFFFFF; }
+
+        .icon-btn-warn {
+            border-color: rgba(245,158,11,0.3);
+            background: rgba(245,158,11,0.1);
+            color: #FCD34D;
+        }
+
+        .icon-btn-warn:hover { background: rgba(245,158,11,0.25); color: #FFFFFF; }
+
+        .form-group { margin-bottom: 1.25rem; }
+
         label {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
             color: #CBD5E1;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
         }
-        label i {
-            margin-right: 8px;
-            color: #3B82F6;
-        }
-        input, select, textarea {
+
+        input, select {
             width: 100%;
-            padding: 0.85rem 1rem;
+            padding: 0.75rem 1rem;
             background: #0F172A;
             border: 1px solid #334155;
-            border-radius: 16px;
+            border-radius: 12px;
             color: #F1F5F9;
             font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
             transition: all 0.2s;
-            font-size: 0.95rem;
         }
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #3B82F6;
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.3);
-        }
+
+        input:focus, select:focus { outline: none; border-color: #3B82F6; box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
+        input[readonly] { background: #1E293B; color: #94A3B8; cursor: default; }
+
         .btn {
+            padding: 0.7rem 1.25rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            padding: 0.7rem 1.5rem;
-            border-radius: 40px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.9rem;
-            background: #1E293B;
-            color: #E2E8F0;
-        }
-        .btn-primary {
-            background: linear-gradient(95deg, #2563EB, #3B82F6);
-            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
-            color: white;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            background: linear-gradient(95deg, #1D4ED8, #2563EB);
-            box-shadow: 0 8px 18px rgba(37,99,235,0.4);
-        }
-        .btn-outline {
-            background: transparent;
-            border: 1px solid #475569;
-        }
-        .btn-outline:hover {
-            border-color: #3B82F6;
-            background: rgba(59,130,246,0.1);
-            transform: translateY(-2px);
-        }
-
-        .alert {
-            padding: 1rem 1.2rem;
-            border-radius: 24px;
-            margin-bottom: 1.8rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(6px);
-            border-left: 6px solid;
-            animation: slideIn 0.3s ease;
-        }
-        .alert-success {
-            border-left-color: #10B981;
-            background: rgba(16,185,129,0.1);
-        }
-        .alert-error {
-            border-left-color: #EF4444;
-            background: rgba(239,68,68,0.1);
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .two-columns {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 2rem;
-        }
-        @media (max-width: 900px) {
-            .two-columns {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-            .navbar {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .card-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .icon-btn {
-            background: none;
-            border: none;
-            color: #94A3B8;
-            cursor: pointer;
-            font-size: 1.2rem;
+            gap: 0.4rem;
             transition: all 0.2s;
-            padding: 5px;
-            border-radius: 8px;
         }
-        .icon-btn:hover {
-            color: #3B82F6;
-            background: rgba(59,130,246,0.1);
-            transform: scale(1.1);
-        }
+
+        .btn-primary { background: linear-gradient(95deg, #2563EB, #3B82F6); color: white; }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(37,99,235,0.4); }
+
+        .btn-outline { background: rgba(30,41,59,0.8); color: #94A3B8; border: 1px solid #334155; }
+        .btn-outline:hover { border-color: #3B82F6; color: #60A5FA; }
+
+        .btn-danger { background: rgba(239,68,68,0.15); color: #F87171; border: 1px solid rgba(239,68,68,0.3); }
+        .btn-danger:hover { background: rgba(239,68,68,0.3); color: #FFFFFF; }
+
+        .producto-item { display: grid; grid-template-columns: 1fr 100px 120px 40px; gap: 0.5rem; margin-bottom: 0.75rem; align-items: center; }
 
         footer {
             text-align: center;
-            margin-top: 3rem;
-            font-size: 0.8rem;
+            padding: 1.5rem;
             color: #475569;
-            padding: 1rem;
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(59,130,246,0.1);
+            margin-top: 2rem;
         }
 
         .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(4px);
-            z-index: 9999;
             display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 9999;
             align-items: center;
             justify-content: center;
-        }
-        .loading-spinner {
-            text-align: center;
-            background: rgba(30,41,59,0.95);
-            padding: 2rem;
-            border-radius: 20px;
-        }
-        .loading-spinner i {
-            color: #3B82F6;
-            font-size: 3rem;
-        }
-        .loading-spinner p {
-            margin-top: 1rem;
-            color: #E2E8F0;
+            flex-direction: column;
+            gap: 1rem;
         }
 
-        .producto-item {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
+        .loading-spinner { color: #3B82F6; font-size: 2rem; text-align: center; }
+        .loading-spinner p { color: #94A3B8; font-size: 0.9rem; margin-top: 0.5rem; }
+
+        .role-tag {
+            display: inline-flex;
             align-items: center;
+            gap: 4px;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
         }
-        .producto-item select {
-            flex: 2;
-        }
-        .producto-item input {
-            flex: 1;
-        }
+
+        .role-admin { background: rgba(245,158,11,0.2); color: #FCD34D; }
+        .role-user  { background: rgba(59,130,246,0.2); color: #93C5FD; }
     </style>
 </head>
 <body>
 
 <nav class="navbar">
-    <div class="logo">
-        <img th:src="@{/images/logo.png}" alt="KinalApp Logo" style="width: 60px; height: 60px; margin-bottom: 1rem;">
-        <h3>KinalApp</h3>
-        <p>Sistema de Gestión Integral</p>
-    </div>
+    <a class="nav-brand" href="/">
+        <img th:src="@{/images/logo.png}" alt="Logo">
+        <span class="nav-brand-text">KinalApp</span>
+    </a>
+
     <div class="nav-links">
         <a href="?seccion=clientes" class="nav-link" th:classappend="${seccionActual == 'clientes'} ? 'active' : ''">
             <i class="fas fa-users"></i> Clientes
@@ -410,38 +323,44 @@
         <a href="?seccion=ventas" class="nav-link" th:classappend="${seccionActual == 'ventas'} ? 'active' : ''">
             <i class="fas fa-shopping-cart"></i> Ventas
         </a>
+        <a href="?seccion=usuarios" class="nav-link" sec:authorize="hasRole('ADMIN')"
+           th:classappend="${seccionActual == 'usuarios'} ? 'active' : ''">
+            <i class="fas fa-user-cog"></i> Usuarios
+        </a>
     </div>
+
     <div class="user-info">
         <span class="badge badge-active">
             <i class="fas fa-user"></i>
             <span th:text="${#authentication.name}">Usuario</span>
         </span>
-        <span class="badge badge-active" sec:authorize="hasRole('ADMIN')">
-            <i class="fas fa-tag"></i>
-            ADMIN
+        <span class="badge badge-admin" sec:authorize="hasRole('ADMIN')">
+            <i class="fas fa-crown"></i> ADMIN
         </span>
-        <span class="badge badge-inactive" sec:authorize="!hasRole('ADMIN')">
-            <i class="fas fa-tag"></i>
-            USER
+        <span class="badge badge-user" sec:authorize="!hasRole('ADMIN')">
+            <i class="fas fa-tag"></i> USER
         </span>
-        <a th:href="@{/logout}" class="nav-link" style="color: #F87171;">
-            <i class="fas fa-sign-out-alt"></i> Salir
-        </a>
+        <form th:action="@{/logout}" method="post" style="margin:0;">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit" class="nav-link-logout">
+                <i class="fas fa-sign-out-alt"></i> Salir
+            </button>
+        </form>
     </div>
 </nav>
 
 <div class="container">
-    <!-- Mensajes -->
+
     <div th:if="${mensajeExito}" class="alert alert-success">
         <i class="fas fa-check-circle"></i>
-        <span th:text="${mensajeExito}">Operación exitosa</span>
+        <span th:text="${mensajeExito}">Operacion exitosa</span>
     </div>
     <div th:if="${mensajeError}" class="alert alert-error">
-        <i class="fas fa-exclamation-triangle"></i>
-        <span th:text="${mensajeError}">Error en la operación</span>
+        <i class="fas fa-exclamation-circle"></i>
+        <span th:text="${mensajeError}">Error</span>
     </div>
 
-    <!-- SECCIÓN CLIENTES -->
+    <!-- ═══════════════════════════ CLIENTES ═══════════════════════════ -->
     <div th:if="${seccionActual == 'clientes'}">
         <div class="two-columns">
             <div class="card">
@@ -452,7 +371,13 @@
                     <div class="table-responsive">
                         <table class="data-table">
                             <thead>
-                            <tr><th>DPI</th><th>Nombre Completo</th><th>Dirección</th><th>Estado</th><th>Acciones</th></tr>
+                            <tr>
+                                <th>DPI</th>
+                                <th>Nombre Completo</th>
+                                <th>Direccion</th>
+                                <th>Estado</th>
+                                <th sec:authorize="hasRole('ADMIN')">Acciones</th>
+                            </tr>
                             </thead>
                             <tbody>
                             <tr th:each="cliente : ${listaClientes}">
@@ -460,21 +385,25 @@
                                 <td th:text="${cliente.nombreCliente + ' ' + cliente.apellidoCliente}">-</td>
                                 <td th:text="${cliente.direccion}">-</td>
                                 <td>
-                                        <span class="badge" th:classappend="${cliente.estado == 1} ? 'badge-active' : 'badge-inactive'">
-                                            <span th:text="${cliente.estado == 1} ? 'Activo' : 'Inactivo'">Activo</span>
-                                        </span>
+                                    <span class="badge" th:classappend="${cliente.estado == 1} ? 'badge-active' : 'badge-inactive'">
+                                        <span th:text="${cliente.estado == 1} ? 'Activo' : 'Inactivo'">Activo</span>
+                                    </span>
                                 </td>
-                                <td class="action-buttons">
-                                    <button class="icon-btn" th:data-dpi="${cliente.DPICliente}" onclick="editarCliente(this.getAttribute('data-dpi'))">
+                                <td class="action-buttons" sec:authorize="hasRole('ADMIN')">
+                                    <button class="icon-btn" th:data-dpi="${cliente.DPICliente}"
+                                            onclick="editarCliente(this.getAttribute('data-dpi'))"
+                                            title="Editar">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="icon-btn" th:data-dpi="${cliente.DPICliente}" onclick="eliminarCliente(this.getAttribute('data-dpi'))">
+                                    <button class="icon-btn icon-btn-danger" th:data-dpi="${cliente.DPICliente}"
+                                            onclick="eliminarCliente(this.getAttribute('data-dpi'))"
+                                            title="Eliminar">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(listaClientes)}">
-                                <td colspan="5" style="text-align:center;">No hay clientes registrados</td>
+                                <td colspan="5" style="text-align:center; color:#475569; padding:2rem;">No hay clientes registrados</td>
                             </tr>
                             </tbody>
                         </table>
@@ -484,13 +413,17 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h2><i class="fas fa-pen-alt"></i> Gestión de Clientes</h2>
+                    <h2><i class="fas fa-pen-alt"></i>
+                        <span th:text="${clienteForm.DPICliente != null and !clienteForm.DPICliente.isEmpty()} ? 'Editar Cliente' : 'Agregar Cliente'">Agregar Cliente</span>
+                    </h2>
                 </div>
                 <div class="card-body">
                     <form th:action="@{/guardarCliente}" method="post" th:object="${clienteForm}">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                         <div class="form-group">
                             <label><i class="fas fa-id-card"></i> DPI</label>
-                            <input type="text" th:field="*{DPICliente}" placeholder="Ingrese DPI" required>
+                            <input type="text" th:field="*{DPICliente}" placeholder="Ingrese DPI" required
+                                   th:readonly="${clienteForm.DPICliente != null and !clienteForm.DPICliente.isEmpty()}">
                         </div>
                         <div class="form-group">
                             <label><i class="fas fa-user"></i> Nombre</label>
@@ -501,8 +434,8 @@
                             <input type="text" th:field="*{apellidoCliente}" placeholder="Apellido" required>
                         </div>
                         <div class="form-group">
-                            <label><i class="fas fa-map-marker-alt"></i> Dirección</label>
-                            <input type="text" th:field="*{direccion}" placeholder="Dirección">
+                            <label><i class="fas fa-map-marker-alt"></i> Direccion</label>
+                            <input type="text" th:field="*{direccion}" placeholder="Direccion">
                         </div>
                         <div class="form-group">
                             <label><i class="fas fa-toggle-on"></i> Estado</label>
@@ -511,28 +444,40 @@
                                 <option th:value="0">Inactivo</option>
                             </select>
                         </div>
-                        <div style="display: flex; gap: 1rem;">
+                        <div style="display:flex; gap:1rem;">
                             <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Guardar</button>
                             <button type="reset" class="btn btn-outline"><i class="fas fa-undo-alt"></i> Limpiar</button>
                         </div>
+                        <p sec:authorize="!hasRole('ADMIN')" style="margin-top:0.75rem; color:#94A3B8; font-size:0.82rem;">
+                            <i class="fas fa-info-circle" style="color:#60A5FA;"></i>
+                            Editar y eliminar clientes solo est&#225; disponible para administradores.
+                        </p>
                     </form>
                 </div>
             </div>
+
         </div>
     </div>
 
-    <!-- SECCIÓN PRODUCTOS -->
+    <!-- ═══════════════════════════ PRODUCTOS ═══════════════════════════ -->
     <div th:if="${seccionActual == 'productos'}">
         <div class="two-columns">
             <div class="card">
                 <div class="card-header">
-                    <h2><i class="fas fa-table-list"></i> Productos en Catálogo</h2>
+                    <h2><i class="fas fa-table-list"></i> Productos en Catalogo</h2>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="data-table">
                             <thead>
-                            <tr><th>Código</th><th>Producto</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr>
+                            <tr>
+                                <th>Codigo</th>
+                                <th>Producto</th>
+                                <th>Precio</th>
+                                <th>Stock</th>
+                                <th>Estado</th>
+                                <th sec:authorize="hasRole('ADMIN')">Acciones</th>
+                            </tr>
                             </thead>
                             <tbody>
                             <tr th:each="prod : ${listaProductos}">
@@ -541,21 +486,25 @@
                                 <td th:text="'Q ' + ${prod.precio}">-</td>
                                 <td th:text="${prod.stock}">-</td>
                                 <td>
-                                        <span class="badge" th:classappend="${prod.estado == 1} ? 'badge-active' : 'badge-inactive'">
-                                            <span th:text="${prod.estado == 1} ? 'Activo' : 'Inactivo'">Activo</span>
-                                        </span>
+                                    <span class="badge" th:classappend="${prod.estado == 1} ? 'badge-active' : 'badge-inactive'">
+                                        <span th:text="${prod.estado == 1} ? 'Activo' : 'Inactivo'">Activo</span>
+                                    </span>
                                 </td>
-                                <td class="action-buttons">
-                                    <button class="icon-btn" th:data-codigo="${prod.codigoProducto}" onclick="editarProducto(this.getAttribute('data-codigo'))">
+                                <td class="action-buttons" sec:authorize="hasRole('ADMIN')">
+                                    <button class="icon-btn" th:data-codigo="${prod.codigoProducto}"
+                                            onclick="editarProducto(this.getAttribute('data-codigo'))"
+                                            title="Editar">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="icon-btn" th:data-codigo="${prod.codigoProducto}" onclick="eliminarProducto(this.getAttribute('data-codigo'))">
+                                    <button class="icon-btn icon-btn-danger" th:data-codigo="${prod.codigoProducto}"
+                                            onclick="eliminarProducto(this.getAttribute('data-codigo'))"
+                                            title="Eliminar">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(listaProductos)}">
-                                <td colspan="6" style="text-align:center;">No hay productos registrados</td>
+                                <td colspan="6" style="text-align:center; color:#475569; padding:2rem;">No hay productos registrados</td>
                             </tr>
                             </tbody>
                         </table>
@@ -565,10 +514,14 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h2><i class="fas fa-pen-alt"></i> Gestión de Productos</h2>
+                    <h2><i class="fas fa-pen-alt"></i>
+                        <span th:text="${productoForm.codigoProducto != null} ? 'Editar Producto' : 'Agregar Producto'">Agregar Producto</span>
+                    </h2>
                 </div>
                 <div class="card-body">
                     <form th:action="@{/guardarProducto}" method="post" th:object="${productoForm}">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <input type="hidden" th:field="*{codigoProducto}"/>
                         <div class="form-group">
                             <label><i class="fas fa-tag"></i> Nombre Producto</label>
                             <input type="text" th:field="*{nombreProducto}" placeholder="Nombre del producto" required>
@@ -588,39 +541,45 @@
                                 <option th:value="0">Inactivo</option>
                             </select>
                         </div>
-                        <div style="display: flex; gap: 1rem;">
+                        <div style="display:flex; gap:1rem;">
                             <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Guardar</button>
                             <button type="reset" class="btn btn-outline"><i class="fas fa-undo-alt"></i> Limpiar</button>
                         </div>
+                        <p sec:authorize="!hasRole('ADMIN')" style="margin-top:0.75rem; color:#94A3B8; font-size:0.82rem;">
+                            <i class="fas fa-info-circle" style="color:#60A5FA;"></i>
+                            Editar y eliminar productos solo est&#225; disponible para administradores.
+                        </p>
                     </form>
                 </div>
             </div>
+
         </div>
     </div>
 
-    <!-- SECCIÓN VENTAS -->
+    <!-- ═══════════════════════════ VENTAS ═══════════════════════════ -->
     <div th:if="${seccionActual == 'ventas'}">
         <div class="two-columns">
             <div class="card">
                 <div class="card-header">
                     <h2><i class="fas fa-history"></i> Historial de Ventas</h2>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <button class="btn btn-outline" onclick="filtrarVentas('todas')">
-                            <i class="fas fa-list"></i> Todas
-                        </button>
-                        <button class="btn btn-outline" onclick="filtrarVentas('activas')">
-                            <i class="fas fa-check-circle"></i> Activas
-                        </button>
-                        <button class="btn btn-outline" onclick="filtrarVentas('anuladas')">
-                            <i class="fas fa-ban"></i> Anuladas
-                        </button>
+                    <div style="display:flex; gap:0.5rem;">
+                        <button class="btn btn-outline" onclick="filtrarVentas('todas')"><i class="fas fa-list"></i> Todas</button>
+                        <button class="btn btn-outline" onclick="filtrarVentas('activas')"><i class="fas fa-check-circle"></i> Activas</button>
+                        <button class="btn btn-outline" onclick="filtrarVentas('anuladas')"><i class="fas fa-ban"></i> Anuladas</button>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="data-table" id="tablaVentas">
                             <thead>
-                            <tr><th>Código</th><th>Fecha</th><th>Cliente</th><th>Total (Q)</th><th>Estado</th><th>Acciones</th></tr>
+                            <tr>
+                                <th>Codigo</th>
+                                <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>Total (Q)</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
                             </thead>
                             <tbody>
                             <tr th:each="venta : ${listaVentas}">
@@ -629,20 +588,24 @@
                                 <td th:text="${venta.cliente.nombreCliente + ' ' + venta.cliente.apellidoCliente}">-</td>
                                 <td th:text="'Q ' + ${venta.total}">-</td>
                                 <td>
-                                        <span class="badge" th:classappend="${venta.estado == 1} ? 'badge-active' : 'badge-inactive'">
-                                            <i th:if="${venta.estado == 1}" class="fas fa-check-circle"></i>
-                                            <i th:unless="${venta.estado == 1}" class="fas fa-ban"></i>
-                                            <span th:text="${venta.estado == 1} ? 'Activa' : 'Anulada'">Activa</span>
-                                        </span>
+                                    <span class="badge" th:classappend="${venta.estado == 1} ? 'badge-active' : 'badge-inactive'">
+                                        <i th:if="${venta.estado == 1}" class="fas fa-check-circle"></i>
+                                        <i th:unless="${venta.estado == 1}" class="fas fa-ban"></i>
+                                        <span th:text="${venta.estado == 1} ? 'Activa' : 'Anulada'">Activa</span>
+                                    </span>
                                 </td>
                                 <td class="action-buttons">
-                                    <button class="icon-btn" th:data-codigo="${venta.codigoVenta}" onclick="anularVenta(this.getAttribute('data-codigo'))" th:if="${venta.estado == 1}">
+                                    <button class="icon-btn icon-btn-warn"
+                                            th:data-codigo="${venta.codigoVenta}"
+                                            onclick="anularVenta(this.getAttribute('data-codigo'))"
+                                            th:if="${venta.estado == 1}"
+                                            title="Anular venta">
                                         <i class="fas fa-ban"></i>
                                     </button>
                                 </td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(listaVentas)}">
-                                <td colspan="6" style="text-align:center;">No hay ventas registradas</td>
+                                <td colspan="6" style="text-align:center; color:#475569; padding:2rem;">No hay ventas registradas</td>
                             </tr>
                             </tbody>
                         </table>
@@ -660,46 +623,159 @@
                             <label><i class="fas fa-user"></i> Cliente *</label>
                             <select id="clienteId" required>
                                 <option value="">Seleccione un cliente</option>
-                                <option th:each="cliente : ${listaClientes}" th:value="${cliente.DPICliente}" th:text="${cliente.nombreCliente + ' ' + cliente.apellidoCliente + ' - ' + cliente.DPICliente}"></option>
+                                <option th:each="cliente : ${listaClientes}"
+                                        th:value="${cliente.DPICliente}"
+                                        th:text="${cliente.nombreCliente + ' ' + cliente.apellidoCliente + ' - ' + cliente.DPICliente}">
+                                </option>
                             </select>
                         </div>
-
                         <div class="form-group">
                             <label><i class="fas fa-box"></i> Productos *</label>
                             <div id="productosContainer">
                                 <div class="producto-item">
                                     <select class="productoSelect" required>
                                         <option value="">Seleccione un producto</option>
-                                        <option th:each="producto : ${listaProductos}" th:value="${producto.codigoProducto}"
+                                        <option th:each="producto : ${listaProductos}"
+                                                th:value="${producto.codigoProducto}"
                                                 th:data-precio="${producto.precio}"
                                                 th:data-stock="${producto.stock}"
                                                 th:text="${producto.nombreProducto + ' - Q' + producto.precio + ' (Stock: ' + producto.stock + ')'}">
                                         </option>
                                     </select>
-                                    <input type="number" class="cantidadInput" placeholder="Cantidad" min="1" required>
+                                    <input type="number" class="cantidadInput" placeholder="Cant." min="1" required>
                                     <input type="text" class="subtotalInput" placeholder="Subtotal" readonly>
-                                    <button type="button" class="btn btn-outline" onclick="eliminarProducto(this)">
+                                    <button type="button" class="icon-btn icon-btn-danger" onclick="quitarProducto(this)">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-outline" onclick="agregarProducto()" style="margin-top: 10px; width: 100%;">
+                            <button type="button" class="btn btn-outline" onclick="agregarProducto()" style="margin-top:10px; width:100%;">
                                 <i class="fas fa-plus"></i> Agregar otro producto
                             </button>
                         </div>
-
                         <div class="form-group">
                             <label><i class="fas fa-calculator"></i> Total de la Venta</label>
-                            <input type="text" id="totalVenta" value="Q 0.00" readonly style="background: #1E293B; font-size: 1.2rem; font-weight: bold;">
+                            <input type="text" id="totalVenta" value="Q 0.00" readonly style="font-size:1.1rem; font-weight:bold;">
                         </div>
+                        <div style="display:flex; gap:1rem;">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Guardar Venta</button>
+                            <button type="button" class="btn btn-outline" onclick="limpiarFormularioVenta()"><i class="fas fa-undo-alt"></i> Limpiar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                        <div style="display: flex; gap: 1rem;">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Guardar Venta
-                            </button>
-                            <button type="button" class="btn btn-outline" onclick="limpiarFormularioVenta()">
-                                <i class="fas fa-undo-alt"></i> Limpiar
-                            </button>
+    <!-- ═══════════════════════════ USUARIOS (solo ADMIN) ═══════════════════════════ -->
+    <div th:if="${seccionActual == 'usuarios'}" sec:authorize="hasRole('ADMIN')">
+        <div class="two-columns">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-users-cog"></i> Usuarios del Sistema</h2>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                            <tr>
+                                <th>Codigo</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Rol</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="usr : ${listaUsuarios}">
+                                <td th:text="${usr.codigoUsuario}">-</td>
+                                <td th:text="${usr.username}">-</td>
+                                <td th:text="${usr.email}">-</td>
+                                <td>
+                                    <span class="role-tag" th:classappend="${usr.rol == 'ADMIN'} ? 'role-admin' : 'role-user'">
+                                        <i th:if="${usr.rol == 'ADMIN'}" class="fas fa-crown"></i>
+                                        <i th:unless="${usr.rol == 'ADMIN'}" class="fas fa-user"></i>
+                                        <span th:text="${usr.rol}">USER</span>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge" th:classappend="${usr.estado == 1} ? 'badge-active' : 'badge-inactive'">
+                                        <span th:text="${usr.estado == 1} ? 'Activo' : 'Inactivo'">Activo</span>
+                                    </span>
+                                </td>
+                                <td class="action-buttons">
+                                    <button class="icon-btn"
+                                            th:data-codigo="${usr.codigoUsuario}"
+                                            th:data-username="${usr.username}"
+                                            th:data-email="${usr.email}"
+                                            th:data-rol="${usr.rol}"
+                                            th:data-estado="${usr.estado}"
+                                            onclick="cargarUsuario(this)"
+                                            title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="icon-btn icon-btn-warn"
+                                            th:data-codigo="${usr.codigoUsuario}"
+                                            th:data-estado="${usr.estado}"
+                                            onclick="toggleEstadoUsuario(this.getAttribute('data-codigo'), this.getAttribute('data-estado'))"
+                                            th:title="${usr.estado == 1} ? 'Desactivar usuario' : 'Activar usuario'">
+                                        <i th:if="${usr.estado == 1}" class="fas fa-user-slash"></i>
+                                        <i th:unless="${usr.estado == 1}" class="fas fa-user-check"></i>
+                                    </button>
+                                    <button class="icon-btn icon-btn-danger"
+                                            th:data-codigo="${usr.codigoUsuario}"
+                                            onclick="eliminarUsuario(this.getAttribute('data-codigo'))"
+                                            title="Eliminar">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(listaUsuarios)}">
+                                <td colspan="6" style="text-align:center; color:#475569; padding:2rem;">No hay usuarios registrados</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-user-plus"></i> <span id="tituloFormUsuario">Nuevo Usuario</span></h2>
+                </div>
+                <div class="card-body">
+                    <form id="formUsuario" onsubmit="return guardarUsuario(event)">
+                        <input type="hidden" id="usuarioCodigo" value="">
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Username *</label>
+                            <input type="text" id="usuarioUsername" placeholder="Nombre de usuario" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-envelope"></i> Email *</label>
+                            <input type="email" id="usuarioEmail" placeholder="correo@ejemplo.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-lock"></i> Contrasena <span id="passHint" style="color:#94A3B8; font-weight:400;">(requerida)</span></label>
+                            <input type="password" id="usuarioPassword" placeholder="Minimo 6 caracteres">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-crown"></i> Rol *</label>
+                            <select id="usuarioRol">
+                                <option value="USER">Usuario (USER)</option>
+                                <option value="ADMIN">Administrador (ADMIN)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-toggle-on"></i> Estado *</label>
+                            <select id="usuarioEstado">
+                                <option value="1">Activo</option>
+                                <option value="0">Inactivo</option>
+                            </select>
+                        </div>
+                        <div style="display:flex; gap:1rem;">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Guardar</button>
+                            <button type="button" class="btn btn-outline" onclick="limpiarFormUsuario()"><i class="fas fa-undo-alt"></i> Limpiar</button>
                         </div>
                     </form>
                 </div>
@@ -708,11 +784,10 @@
     </div>
 
     <footer>
-        <i class="fas fa-shield-alt"></i> KinalApp - Sistema de Gestión Integral
+        <i class="fas fa-shield-alt"></i> KinalApp - Sistema de Gestion Integral
     </footer>
 </div>
 
-<!-- Loading Overlay -->
 <div id="loadingOverlay" class="loading-overlay">
     <div class="loading-spinner">
         <i class="fas fa-circle-notch fa-spin"></i>
@@ -721,76 +796,58 @@
 </div>
 
 <script>
-    // Mostrar/Ocultar loading
-    function showLoading() {
-        document.getElementById('loadingOverlay').style.display = 'flex';
-    }
+    const csrfToken  = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    const codigoUsuarioActual = document.querySelector('meta[name="codigoUsuario"]').getAttribute('content');
 
-    function hideLoading() {
-        document.getElementById('loadingOverlay').style.display = 'none';
-    }
+    function showLoading() { document.getElementById('loadingOverlay').style.display = 'flex'; }
+    function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
 
-    // ========== FUNCIONES CLIENTES ==========
     function editarCliente(dpi) {
         window.location.href = '/clientes/editar?dpi=' + encodeURIComponent(dpi);
     }
 
     async function eliminarCliente(dpi) {
-        if(confirm('¿Estás seguro de eliminar este cliente?')) {
-            showLoading();
-            try {
-                const response = await fetch('/clientes/' + dpi, { method: 'DELETE' });
-                if(response.ok) {
-                    alert('Cliente eliminado exitosamente');
-                    window.location.href = '/?seccion=clientes';
-                } else {
-                    alert('Error al eliminar el cliente');
-                    hideLoading();
-                }
-            } catch(error) {
-                alert('Error de conexión: ' + error);
-                hideLoading();
-            }
-        }
+        if (!confirm('¿Estas seguro de eliminar este cliente?')) return;
+        showLoading();
+        try {
+            const r = await fetch('/clientes/' + dpi, {
+                method: 'DELETE',
+                headers: { [csrfHeader]: csrfToken }
+            });
+            if (r.ok) { alert('Cliente eliminado'); window.location.href = '/?seccion=clientes'; }
+            else { alert('Error al eliminar el cliente'); hideLoading(); }
+        } catch (e) { alert('Error de conexion: ' + e); hideLoading(); }
     }
 
-    // ========== FUNCIONES PRODUCTOS ==========
+
     function editarProducto(codigo) {
         window.location.href = '/productos/editar?codigo=' + codigo;
     }
 
     async function eliminarProducto(codigo) {
-        if(confirm('¿Estás seguro de eliminar este producto?')) {
-            showLoading();
-            try {
-                const response = await fetch('/productos/' + codigo, { method: 'DELETE' });
-                if(response.ok) {
-                    alert('Producto eliminado exitosamente');
-                    window.location.href = '/?seccion=productos';
-                } else {
-                    alert('Error al eliminar el producto');
-                    hideLoading();
-                }
-            } catch(error) {
-                alert('Error de conexión: ' + error);
-                hideLoading();
-            }
-        }
+        if (!confirm('¿Estas seguro de eliminar este producto?')) return;
+        showLoading();
+        try {
+            const r = await fetch('/productos/' + codigo, {
+                method: 'DELETE',
+                headers: { [csrfHeader]: csrfToken }
+            });
+            if (r.ok) { alert('Producto eliminado'); window.location.href = '/?seccion=productos'; }
+            else { alert('Error al eliminar el producto'); hideLoading(); }
+        } catch (e) { alert('Error de conexion: ' + e); hideLoading(); }
     }
-
-    // ========== FUNCIONES VENTAS ==========
     function agregarProducto() {
         const container = document.getElementById('productosContainer');
         const template = container.querySelector('.producto-item').cloneNode(true);
         template.querySelector('.cantidadInput').value = '';
         template.querySelector('.subtotalInput').value = '';
         container.appendChild(template);
-
         template.querySelector('.productoSelect').addEventListener('change', calcularTotales);
         template.querySelector('.cantidadInput').addEventListener('input', calcularTotales);
     }
 
-    function eliminarProducto(btn) {
+    function quitarProducto(btn) {
         const container = document.getElementById('productosContainer');
         if (container.children.length > 1) {
             btn.closest('.producto-item').remove();
@@ -801,176 +858,211 @@
     }
 
     function calcularTotales() {
-        const items = document.querySelectorAll('.producto-item');
         let total = 0;
-
-        items.forEach(item => {
-            const select = item.querySelector('.productoSelect');
-            const cantidad = item.querySelector('.cantidadInput').value;
-            const subtotalInput = item.querySelector('.subtotalInput');
-
-            if (select.value && cantidad > 0) {
-                const precio = parseFloat(select.options[select.selectedIndex].getAttribute('data-precio'));
-                const subtotal = precio * parseInt(cantidad);
-                subtotalInput.value = 'Q ' + subtotal.toFixed(2);
+        document.querySelectorAll('.producto-item').forEach(item => {
+            const sel = item.querySelector('.productoSelect');
+            const cant = item.querySelector('.cantidadInput').value;
+            const sub = item.querySelector('.subtotalInput');
+            if (sel.value && cant > 0) {
+                const precio = parseFloat(sel.options[sel.selectedIndex].getAttribute('data-precio'));
+                const subtotal = precio * parseInt(cant);
+                sub.value = 'Q ' + subtotal.toFixed(2);
                 total += subtotal;
             } else {
-                subtotalInput.value = 'Q 0.00';
+                sub.value = 'Q 0.00';
             }
         });
-
         document.getElementById('totalVenta').value = 'Q ' + total.toFixed(2);
     }
 
     async function guardarVenta(event) {
         event.preventDefault();
-
         const clienteId = document.getElementById('clienteId').value;
-        if (!clienteId) {
-            alert('Seleccione un cliente');
-            return false;
-        }
-
+        if (!clienteId) { alert('Seleccione un cliente'); return false; }
 
         const productos = [];
-        const items = document.querySelectorAll('.producto-item');
-
-        for (let item of items) {
-            const select = item.querySelector('.productoSelect');
-            const cantidad = item.querySelector('.cantidadInput').value;
-
-            if (select.value && cantidad > 0) {
-                const precio = parseFloat(select.options[select.selectedIndex].getAttribute('data-precio'));
+        document.querySelectorAll('.producto-item').forEach(item => {
+            const sel = item.querySelector('.productoSelect');
+            const cant = item.querySelector('.cantidadInput').value;
+            if (sel.value && cant > 0) {
                 productos.push({
-                    codigoProducto: select.value,
-                    cantidad: parseInt(cantidad),
-                    precioUnitario: precio
+                    codigoProducto: sel.value,
+                    cantidad: parseInt(cant),
+                    precioUnitario: parseFloat(sel.options[sel.selectedIndex].getAttribute('data-precio'))
                 });
             }
-        }
+        });
 
-
-        if (productos.length === 0) {
-            alert('Agregue al menos un producto');
-            return false;
-        }
+        if (productos.length === 0) { alert('Agregue al menos un producto'); return false; }
 
         const total = parseFloat(document.getElementById('totalVenta').value.replace('Q ', ''));
-
         showLoading();
-
-        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-        const codigoUsuario = document.querySelector('meta[name="codigoUsuario"]').getAttribute('content');
-
         try {
-            const ventaResponse = await fetch('/ventas', {
+            const ventaResp = await fetch('/ventas', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', [csrfHeader]: csrfToken },
                 body: JSON.stringify({
                     cliente: { DPICliente: clienteId },
-                    usuario: { codigoUsuario: parseInt(codigoUsuario) },
                     total: total,
                     fechaVenta: new Date().toISOString().split('T')[0],
                     estado: 1
                 })
             });
 
-            if (ventaResponse.ok) {
-                const venta = await ventaResponse.json();
-
-                for (let detalle of productos) {
+            if (ventaResp.ok) {
+                const venta = await ventaResp.json();
+                for (const det of productos) {
                     await fetch('/detalles-venta', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 'Content-Type': 'application/json', [csrfHeader]: csrfToken },
                         body: JSON.stringify({
-                            cantidad: detalle.cantidad,
-                            precioUnitario: detalle.precioUnitario,
-                            subtotal: detalle.cantidad * detalle.precioUnitario,
+                            cantidad: det.cantidad,
+                            precioUnitario: det.precioUnitario,
+                            subtotal: det.cantidad * det.precioUnitario,
                             venta: { codigoVenta: venta.codigoVenta },
-                            producto: { codigoProducto: detalle.codigoProducto }
+                            producto: { codigoProducto: det.codigoProducto }
                         })
                     });
                 }
-
                 alert('Venta guardada exitosamente');
                 window.location.reload();
             } else {
-                const errorMsg = await ventaResponse.text();
-                alert('Error al guardar la venta: ' + errorMsg);
+                const msg = await ventaResp.text();
+                alert('Error al guardar la venta: ' + msg);
             }
-        } catch (error) {
-            alert('Error de conexión');
-        } finally {
-            hideLoading();
-        }
-
+        } catch (e) { alert('Error de conexion: ' + e.message); }
+        finally { hideLoading(); }
         return false;
     }
 
     function limpiarFormularioVenta() {
         document.getElementById('clienteId').value = '';
-        const container = document.getElementById('productosContainer');
-        while (container.children.length > 1) {
-            container.removeChild(container.lastChild);
-        }
-        const firstItem = container.querySelector('.producto-item');
-        firstItem.querySelector('.cantidadInput').value = '';
-        firstItem.querySelector('.subtotalInput').value = '';
+        const c = document.getElementById('productosContainer');
+        while (c.children.length > 1) c.removeChild(c.lastChild);
+        c.querySelector('.cantidadInput').value = '';
+        c.querySelector('.subtotalInput').value = '';
         calcularTotales();
     }
 
     function filtrarVentas(tipo) {
-        const filas = document.querySelectorAll('#tablaVentas tbody tr');
-        filas.forEach(fila => {
-            if (fila.cells && fila.cells[4]) {
-                const estado = fila.cells[4].innerText.trim();
-                if (tipo === 'activas' && estado === 'Activa') fila.style.display = '';
-                else if (tipo === 'anuladas' && estado === 'Anulada') fila.style.display = '';
-                else if (tipo === 'todas') fila.style.display = '';
-                else fila.style.display = 'none';
-            }
+        document.querySelectorAll('#tablaVentas tbody tr').forEach(fila => {
+            if (!fila.cells || !fila.cells[4]) return;
+            const estado = fila.cells[4].innerText.trim();
+            if (tipo === 'todas') fila.style.display = '';
+            else if (tipo === 'activas')  fila.style.display = estado.includes('Activa')  ? '' : 'none';
+            else if (tipo === 'anuladas') fila.style.display = estado.includes('Anulada') ? '' : 'none';
         });
     }
 
     async function anularVenta(codigo) {
-        if(confirm('¿Anular esta venta?')) {
-            showLoading();
-            try {
-                const csrfT = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-                const csrfH = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-                const response = await fetch('/ventas/' + codigo + '/anular', {
-                    method: 'PATCH',
-                    headers: { [csrfH]: csrfT }
-                });
-                if(response.ok) {
-                    alert('Venta anulada');
-                    window.location.reload();
-                } else {
-                    alert('Error al anular');
-                    hideLoading();
-                }
-            } catch(error) {
-                alert('Error de conexión');
-                hideLoading();
-            }
-        }
+        if (!confirm('¿Anular esta venta? Esta accion no se puede revertir.')) return;
+        showLoading();
+        try {
+            const r = await fetch('/ventas/' + codigo + '/anular', {
+                method: 'PATCH',
+                headers: { [csrfHeader]: csrfToken }
+            });
+            if (r.ok) { alert('Venta anulada exitosamente'); window.location.reload(); }
+            else { alert('Error al anular la venta'); hideLoading(); }
+        } catch (e) { alert('Error de conexion: ' + e); hideLoading(); }
+    }
+    function cargarUsuario(btn) {
+        document.getElementById('usuarioCodigo').value   = btn.getAttribute('data-codigo');
+        document.getElementById('usuarioUsername').value = btn.getAttribute('data-username');
+        document.getElementById('usuarioEmail').value    = btn.getAttribute('data-email');
+        document.getElementById('usuarioRol').value      = btn.getAttribute('data-rol');
+        document.getElementById('usuarioEstado').value   = btn.getAttribute('data-estado');
+        document.getElementById('usuarioPassword').value = '';
+        document.getElementById('tituloFormUsuario').textContent = 'Editar Usuario';
+        document.getElementById('passHint').textContent = '(dejar vacio para no cambiar)';
     }
 
-    // Inicializar event listeners
+    function limpiarFormUsuario() {
+        document.getElementById('usuarioCodigo').value   = '';
+        document.getElementById('usuarioUsername').value = '';
+        document.getElementById('usuarioEmail').value    = '';
+        document.getElementById('usuarioPassword').value = '';
+        document.getElementById('usuarioRol').value      = 'USER';
+        document.getElementById('usuarioEstado').value   = '1';
+        document.getElementById('tituloFormUsuario').textContent = 'Nuevo Usuario';
+        document.getElementById('passHint').textContent = '(requerida)';
+    }
+
+    async function guardarUsuario(event) {
+        event.preventDefault();
+        const codigo   = document.getElementById('usuarioCodigo').value;
+        const username = document.getElementById('usuarioUsername').value.trim();
+        const email    = document.getElementById('usuarioEmail').value.trim();
+        const password = document.getElementById('usuarioPassword').value;
+        const rol      = document.getElementById('usuarioRol').value;
+        const estado   = parseInt(document.getElementById('usuarioEstado').value);
+
+        if (!codigo && !password) { alert('La contrasena es obligatoria para nuevos usuarios'); return false; }
+        if (!codigo && password.length < 6) { alert('La contrasena debe tener al menos 6 caracteres'); return false; }
+
+        const body = { username, email, rol, estado };
+        if (password) body.password = password;
+
+        showLoading();
+        try {
+            const url    = codigo ? '/usuarios/' + codigo : '/usuarios';
+            const method = codigo ? 'PUT' : 'POST';
+            const r = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json', [csrfHeader]: csrfToken },
+                body: JSON.stringify(body)
+            });
+            if (r.ok) {
+                alert(codigo ? 'Usuario actualizado' : 'Usuario creado exitosamente');
+                window.location.href = '/?seccion=usuarios';
+            } else {
+                const msg = await r.text();
+                alert('Error: ' + msg);
+                hideLoading();
+            }
+        } catch (e) { alert('Error de conexion: ' + e.message); hideLoading(); }
+        return false;
+    }
+
+    async function toggleEstadoUsuario(codigo, estadoActual) {
+        const nuevoEstado = estadoActual == '1' ? 0 : 1;
+        const accion = nuevoEstado === 0 ? 'desactivar' : 'activar';
+        if (!confirm('¿Deseas ' + accion + ' este usuario?')) return;
+        showLoading();
+        try {
+            const r = await fetch('/usuarios/' + codigo + '/estado?estado=' + nuevoEstado, {
+                method: 'PATCH',
+                headers: { [csrfHeader]: csrfToken }
+            });
+            if (r.ok) { alert('Estado actualizado'); window.location.reload(); }
+            else { alert('Error al cambiar el estado'); hideLoading(); }
+        } catch (e) { alert('Error de conexion: ' + e); hideLoading(); }
+    }
+
+    async function eliminarUsuario(codigo) {
+        if (!confirm('¿Estas seguro de eliminar este usuario? Esta accion es permanente.')) return;
+        showLoading();
+        try {
+            const r = await fetch('/usuarios/' + codigo, {
+                method: 'DELETE',
+                headers: { [csrfHeader]: csrfToken }
+            });
+            if (r.ok) { alert('Usuario eliminado'); window.location.href = '/?seccion=usuarios'; }
+            else { alert('Error al eliminar el usuario'); hideLoading(); }
+        } catch (e) { alert('Error de conexion: ' + e); hideLoading(); }
+    }
+
+
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.productoSelect').forEach(s => s.addEventListener('change', calcularTotales));
         document.querySelectorAll('.cantidadInput').forEach(c => c.addEventListener('input', calcularTotales));
-
         setTimeout(() => {
             document.querySelectorAll('.alert').forEach(a => {
+                a.style.transition = 'opacity 0.5s';
                 a.style.opacity = '0';
                 setTimeout(() => a.remove(), 500);
             });
         }, 5000);
-
-
-
     });
 </script>
 </body>
