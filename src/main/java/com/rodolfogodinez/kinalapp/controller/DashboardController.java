@@ -11,8 +11,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.List;
 
 @Controller
@@ -37,6 +41,16 @@ public class DashboardController {
     public String dashboard(@RequestParam(value = "seccion", defaultValue = "clientes") String seccion,
                             Model model,
                             @AuthenticationPrincipal UserDetails userDetails) {
+
+        // Si un USER intenta acceder a la sección usuarios, redirigir a clientes
+        boolean isAdmin = userDetails != null &&
+                userDetails.getAuthorities().stream()
+                        .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if ("usuarios".equals(seccion) && !isAdmin) {
+            return "redirect:/?seccion=clientes";
+        }
+
         model.addAttribute("seccionActual", seccion);
 
         if (userDetails != null) {
@@ -53,22 +67,23 @@ public class DashboardController {
         model.addAttribute("listaProductos", productos);
         model.addAttribute("listaVentas", ventas);
 
+        // Siempre proveer los formularios (tanto ADMIN como USER pueden agregar)
         if (seccion.equals("clientes")) {
-            model.addAttribute("tituloTabla", "Clientes Registrados");
-            model.addAttribute("tituloFormulario", "Gestion de Clientes");
-            model.addAttribute("clienteForm", new Cliente());
+            if (!model.containsAttribute("clienteForm")) {
+                model.addAttribute("clienteForm", new Cliente());
+            }
         } else if (seccion.equals("productos")) {
-            model.addAttribute("tituloTabla", "Productos en Catalogo");
-            model.addAttribute("tituloFormulario", "Gestion de Productos");
-            model.addAttribute("productoForm", new Producto());
-        } else if (seccion.equals("ventas")) {
-            model.addAttribute("tituloTabla", "Historial de Ventas");
-            model.addAttribute("tituloFormulario", "Nueva Venta");
+            if (!model.containsAttribute("productoForm")) {
+                model.addAttribute("productoForm", new Producto());
+            }
+        } else if (seccion.equals("usuarios") && isAdmin) {
+            model.addAttribute("listaUsuarios", usuarioService.listarTodos());
         }
 
         return "dashboard";
     }
 
+    // Cualquier usuario autenticado puede guardar clientes
     @PostMapping("/guardarCliente")
     public String guardarCliente(@ModelAttribute Cliente cliente,
                                  RedirectAttributes redirectAttributes) {
@@ -84,6 +99,7 @@ public class DashboardController {
         return "redirect:/?seccion=clientes";
     }
 
+    // Cualquier usuario autenticado puede guardar productos
     @PostMapping("/guardarProducto")
     public String guardarProducto(@ModelAttribute Producto producto,
                                   RedirectAttributes redirectAttributes) {
@@ -102,16 +118,34 @@ public class DashboardController {
         return "redirect:/?seccion=productos";
     }
 
+    // Solo ADMIN puede editar clientes (botón editar en tabla)
     @GetMapping("/clientes/editar")
-    public String editarCliente(@RequestParam String dpi, RedirectAttributes redirectAttributes) {
+    public String editarCliente(@RequestParam String dpi,
+                                RedirectAttributes redirectAttributes,
+                                @AuthenticationPrincipal UserDetails userDetails) {
+        boolean isAdmin = userDetails != null &&
+                userDetails.getAuthorities().stream()
+                        .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        if (!isAdmin) {
+            return "redirect:/?seccion=clientes";
+        }
         clienteService.buscarPorDPI(dpi).ifPresent(cliente ->
                 redirectAttributes.addFlashAttribute("clienteForm", cliente)
         );
         return "redirect:/?seccion=clientes";
     }
 
+    // Solo ADMIN puede editar productos
     @GetMapping("/productos/editar")
-    public String editarProducto(@RequestParam Long codigo, RedirectAttributes redirectAttributes) {
+    public String editarProducto(@RequestParam Long codigo,
+                                 RedirectAttributes redirectAttributes,
+                                 @AuthenticationPrincipal UserDetails userDetails) {
+        boolean isAdmin = userDetails != null &&
+                userDetails.getAuthorities().stream()
+                        .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        if (!isAdmin) {
+            return "redirect:/?seccion=productos";
+        }
         productoService.buscarPorCodigo(codigo).ifPresent(producto ->
                 redirectAttributes.addFlashAttribute("productoForm", producto)
         );
