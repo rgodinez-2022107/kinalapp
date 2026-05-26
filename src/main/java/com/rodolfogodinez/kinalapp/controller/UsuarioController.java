@@ -5,6 +5,7 @@ import com.rodolfogodinez.kinalapp.service.IUsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -34,18 +35,11 @@ public class UsuarioController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/username/{username}")
-    public ResponseEntity<Usuario> buscarPorUsername(@PathVariable String username) {
-        return usuarioService.buscarPorUsername(username)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
     @PostMapping
     public ResponseEntity<?> guardar(@RequestBody Usuario usuario) {
         try {
-            Usuario nuevoUsuario = usuarioService.guardar(usuario);
-            return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
+            Usuario nuevo = usuarioService.guardar(usuario);
+            return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -57,12 +51,26 @@ public class UsuarioController {
             if (!usuarioService.existePorCodigo(codigo)) {
                 return ResponseEntity.notFound().build();
             }
-            Usuario usuarioActualizado = usuarioService.actualizar(codigo, usuario);
-            return ResponseEntity.ok(usuarioActualizado);
+            Usuario actualizado = usuarioService.actualizar(codigo, usuario);
+            return ResponseEntity.ok(actualizado);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PatchMapping("/{codigo}/estado")
+    public ResponseEntity<?> toggleEstado(@PathVariable Long codigo,
+                                          @RequestParam Integer estado) {
+        try {
+            Usuario usuario = usuarioService.buscarPorCodigo(codigo)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            usuario.setEstado(estado);
+            Usuario actualizado = usuarioService.actualizar(codigo, usuario);
+            return ResponseEntity.ok(actualizado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
